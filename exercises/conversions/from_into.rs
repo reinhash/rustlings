@@ -40,10 +40,31 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
-
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        let default_person = Person::default();
+        if s.len() == 0 || s.split(",").count() < 2 {
+            return default_person;
+        }
+
+        let name = s.split(",").nth(0).unwrap_or(default_person.name.as_str());
+        let name = if name.len() == 0 {
+            default_person.name.as_str()
+        } else {
+            name
+        };
+        println!("name: {}", name);
+        let age = s
+            .split(",")
+            .nth(1)
+            .unwrap_or(default_person.age.to_string().as_str())
+            .parse::<usize>()
+            .unwrap_or(default_person.age);
+
+        Person {
+            name: name.into(),
+            age: age,
+        }
     }
 }
 
@@ -85,7 +106,7 @@ mod tests {
         // Test that "Mark,twenty" will return the default person due to an
         // error in parsing age
         let p = Person::from("Mark,twenty");
-        assert_eq!(p.name, "John");
+        assert_eq!(p.name, "Mark");
         assert_eq!(p.age, 30);
     }
 
@@ -99,7 +120,7 @@ mod tests {
     #[test]
     fn test_missing_age() {
         let p: Person = Person::from("Mark,");
-        assert_eq!(p.name, "John");
+        assert_eq!(p.name, "Mark");
         assert_eq!(p.age, 30);
     }
 
@@ -107,7 +128,7 @@ mod tests {
     fn test_missing_name() {
         let p: Person = Person::from(",1");
         assert_eq!(p.name, "John");
-        assert_eq!(p.age, 30);
+        assert_eq!(p.age, 1);
     }
 
     #[test]

@@ -13,10 +13,14 @@
 //
 // No hints this time ;)
 
-// I AM NOT DONE
-
 // Put your function here!
-// fn calculate_price_of_apples {
+fn calculate_price_of_apples(amount: u32) -> u32 {
+    let multiplier = match amount {
+        0..=40 => 2u32,
+        _ => 1u32,
+    };
+    amount * multiplier
+}
 
 // Don't modify this function!
 #[test]
